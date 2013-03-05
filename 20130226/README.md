@@ -12,22 +12,41 @@ You can choose one of the examples in the presentation, and the resulst will be 
 Here's a sample session :
 
 newt:func fons$ ./main 
+
 -> ?
+
 -> bind_1,bind_4,functor_1,functor_3,lambda_1,
+
 -> lambda_6,lambda_7,lambda_8,lambda_9,m_1,
+
 -> m_2,trans_1,trans_2,trans_3,trans_4,
+
 -> trans_5,trans_6,
+
 -> h  : history
+
 -> !  : last command
+
 -> !n : command at position n
+
 -> m_1
+
 -> executing m_1
+
 results : 
+
 27
+
 91
+
 157
+
 47
+
 -11
+
 3
+
      ***     
+
 -> 

@@ -1,6 +1,12 @@
+/Users/fons/Repo/git.hub/graph-repl/graph-repl.xcodeproj/project.xcworkspace/xcuserdata/fons.xcuserdatad/UserInterfaceState.xcuserstate
+UserInterfaceState.xcuserstate
+graph-repl.xcodeproj
+.gitignore
 *~
 *#
 .#*
 *.abcl
 *.lx64fsl
 *.fasl
+.DS_Store
+build/

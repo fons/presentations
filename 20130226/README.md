@@ -1,7 +1,7 @@
 # Functional Programming in C++
 
 This are the materails I used for the my presentation on functional prgramming in c++ at the [New York City C++ Meetup on Feb 26 2013](http://www.meetup.com/nyccpp/events/96847082/). 
-My goal was to present a broad overview of functional programming and its coverage in in c++. You'll find the presentation here in pdf, keynote and power point format.
+My goal was to present a broad overview of functional programming and its coverage in in c++. You'll find the presentation here in [pdf](func_prog_c++_20130226.pdf), [keynote](func_prog_c++_20130226.pdf.key) and [power point](func_prog_c++_20130226.ppt) format.
 
 In addition to the presentation, you'll also find the source code of the examples in the presentation. 
 Just clone the repo and run make. The examples do rely on features in c++11 so older compilers may not work. I used the mac ports version of gcc 4.7. I think you should have no problems building this on linux. Windows may be a different story, but the code is pretty simple and you can probably just suck it into Visual Studio. Or use cygwin..

@@ -5,8 +5,14 @@ graph-repl.xcodeproj
 *~
 *#
 .#*
+*.o
 *.abcl
 *.lx64fsl
 *.fasl
 .DS_Store
 build/
+obj/
+bin/
+*.aux
+*.log
+*.gz

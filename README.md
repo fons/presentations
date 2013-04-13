@@ -7,3 +7,5 @@
 
 ## 20130226 : c++ meetup nyc
 [Functional Programming in C++](20130226/README.md)
+
+##inprogress : work in progess

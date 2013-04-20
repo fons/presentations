@@ -32,7 +32,7 @@ escapeinside={\%*}{*)}          % if you want to add a comment within your code
          %HTML
          %Java
  }
-\doublespacing
+%%\doublespacing
  
 \renewcommand{\familydefault}{\sfdefault}
 
@@ -76,9 +76,9 @@ Yet C++ has always been a multi-paradigm language \cite{stroustrup}.
 %%In fact template meta-programming resembles a pure functional language \cite{vandevoorde, alexan}.
 Recent additions to the standard have improved the support for functional programming \cite{josuttis}.
 In fact, previous attempts to add functional programming features required a significant effort \cite{mcnamara}.
-This paper explores the support out-of-box for functional programming provided by the new standard
-We'll look at techniques typically found in introductory functional programming textbooks \cite{lipovaca, hutton, bird}.
-This article assumes familiarity with C++, but not necessarily with basic functional programming.
+This paper explores the support out-of-box for functional programming provided by the new C++ standard.
+We'll look at techniques typically found in introductory textbooks on functional programming \cite{lipovaca, hutton, bird}.
+This article assumes familiarity with C++, but not necessarily with functional programming.
 
 The source code is available on github \cite{sourcecode} and is compiled using gcc 4.8 installed on Mac OSX using MacPorts \cite{macports}.
 
@@ -105,14 +105,14 @@ So the execution of the for-loop may cause side-effects in other parts of the pr
 The style of programming which emphasizes the use of mutable data and statements is called an imperative programming style.
 Imperative programming makes it hard to prove by simple statement inspection if a program is correct, because its state maybe affected by changes away from statement being reviewed.
 
-By contrast functional programming stresses the construction of computations or functions acting on immutable values.
-Data and operations on the data are not commingled.
-Immutable data acts like a value. 
+By contrast functional programming stresses the construction of functions acting on immutable data.
+Data and operations are kept seperate from each other.
+Immutable data is a value. 
 You can hold a reference to a value like 1, but 1 itself is immutable.
-You can add 2 to the reference but the reference itself still points to 1.
-The use of functions acting on immutable data lies at the heart of functional programming.
+You can add 2 to the reference to 1 but the reference itself still points to 1.
+%%%The use of functions acting on immutable data lies at the heart of functional programming.
 
-In a functional language functions are first-class objects 
+In a functional language functions are first-class objects. 
 You create a reference to a function like any other data type.
 Functions can have functions as arguments or return functions.
 Functions like that are called higher order functions.
@@ -120,7 +120,9 @@ Higher-order functions are used to combine simpler functions into more complex o
 They play an important role in functional programming.
 
 Recursion replaces for-loops as a control structure for list processing \cite{hutton, bird}.
-This creates a new list containing the results of applying a function to the elements of the old list. 
+When you iterate through a list you create a new list containing the results of your operation.
+The input list and its elements remain unchanged.
+%%%of applying a function to the elements of the old list. 
 %%Typically a main function takes a list and a unary operator as an argument. 
 %%It also has a third aikergument which is used to collect the new values.
 %%The body of this function would unary function on the head of the list.
@@ -130,7 +132,7 @@ This creates a new list containing the results of applying a function to the ele
 %%In functional programming languages this tradeoff is small because the new list will reference the old, unchanged elements in its old version.
 %%In C++ that is not going to be the case.  Here the pursuit of referential will come with the cost of creating copies. 
 
-Because functions play such an important role we need a formal way to represent them.
+Because functions play such an important role we use a formal way to represent them.
 This article uses Haskell's notation for function signatures \cite{hutton}. 
 Using that notation the function signature of
 a binary function {\em f}  with arguments of type {\em a} and {\em b} and a return value of type {\em c} is:
@@ -146,8 +148,8 @@ id :: a &\rightarrow& a \\
 id (int \; x)::int  &=& x  \\
 \end{eqnarray*}
 
-In $a \rightarrow b$ the arrow $\rightarrow$ is a generic type which takes two other types $a$ and $b$ to be fully defined.
-Types that are parametrized by other types are referred to as type constructors \cite{lipovaca}.
+In $a \rightarrow b$ the arrow operator $\rightarrow$ is a generic type which takes two other types $a$ and $b$ to be fully defined.
+Types that are parametrized by other types are called type constructors \cite{lipovaca}.
 
 In general $M\;a$ represents a type constructor $M$ which takes a single type variable $a$.
 $M\;a$ corresponds to the C++ class template  
@@ -167,10 +169,10 @@ The equivalent of $[a]$ in C++ are linear containers like $std::list<a>$ or $std
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Lambda expressions allow you to create functions on-the-fly. 
-The body of the lambda can reference free variables which are not defined in its argument list. 
-Free variables are assigned the value found in the environment (i.e. the scope) in which the lambda expression is defined \cite{field}. 
-This capture of the enclosing environment by the lambda creates a closure \cite{field, scott}. 
-
+A variable referenced in the body of the lambda not defined in its argument list is called a free variable. 
+Free variables are assigned values found for them in the environment preceding the definition of the lambda expression \cite{field}. 
+A closure is created by this capture of the enclosing environment by the lambda \cite{field, scott}. 
+\newline
 The (slightly abbreviated) C++ syntax for the lambda expression is \cite{lambdaref}:
 %%---------------
 \[
@@ -179,15 +181,15 @@ The (slightly abbreviated) C++ syntax for the lambda expression is \cite{lambdar
 \end{array}
 \]
 %%------------
-
-The capture specifier $[...]$ determines how the free variables are captured.
-If it's empty $[]$, the body of the lambda can't reference any free variables.
+The specifier $[...]$ determines the way free variables are captured.
+If it's empty $[]$, the body of the lambda can't have any free variables.
 The $[=]$ specifier captures free variables by value, whereas the $[\&]$ captures them by reference.
-When the specifiers $=$ and $\&$ are followed by a variable only that variable will be captured. 
+When the specifiers $=$ or $\&$ are followed by the name of free variable only that variable will be captured. 
 The return type specifier $\rightarrow \; rettype$ is optional.
-The keyword $mutable$ allows the lambda to modify the free variables captured by reference. 
-Lambda's can be bound to variables using $std::function$ \cite{std::function} or auto \cite{auto}.
-The new keyword $auto$ allows you the elide a full type specification, reducing some of the line noise in the code.
+The keyword $mutable$ allows the lambda to modify free variables captured by value. 
+\newline
+Lambda's can be assigned to variables declared using $std::function$ \cite{std::function} or auto \cite{auto}.
+The new keyword $auto$ allows you the elide a full type specification, reducing the line noise in the code.
 %
 \begin{lstlisting}[caption=various ways lambda's capture the environment , label=listing1]
 [...]
@@ -214,19 +216,18 @@ The new keyword $auto$ allows you the elide a full type specification, reducing 
   std::cout << " x :" << x << "; y :" << y << std::endl;  // x :1; y :902
 
 \end{lstlisting}
-Listing \ref{listing1} illustrates the use of the capture specifier.
+Listing \ref{listing1} illustrates the use of capture specifiers.
 The lambda $func$ has no arguments and prints the value of the two free variables $x$ and $y$ to stdout. 
 The free variables $x$ and $y$ are defined earlier in the code and are initialized to 0 and 42 respectively. 
 The capture specifier of $func$ is $[x,\&y]$.  
-So $x$ is captured by value and $y$ be reference.
-The next three lambda's increment the free variables $x$ and $y$.
+Hence $x$ is captured by value and $y$ be reference.
+The next three lambda's increment $x$ and $y$.
 The lambda $inc$ captures y by reference.
-$inc\_alt$ on the other hand captures $y$ by value. 
-The lambda can change $y$ because the keyword $mutable$ is in the definition  
+$inc\_alt$ on the other hand captures $y$ by value and can change $y$ because the keyword $mutable$ is used its the definition  
 $inc\_alt\_alt$ captures the complete environment by reference, and increments both x and y.
 
 Each time y is changed $func$ is called to show the current state of its free variables $x$ and $y$.
-Their values are shown in the comment following $func()$..  
+The comment following $func()$ shows its output. 
 
 Since $y$ is captured by reference is can be changed through side effects.
 On the other hand $x$ is captured once and remains the same.
@@ -248,11 +249,9 @@ On the other hand $x$ is captured once and remains the same.
 \end{lstlisting}
 %
 Listing $\ref{lr}$ shows a recursive implemention of the factorial $n!$. 
-Each invocation of the lambda prints the value of the argument x.
-The return type is specified using the optional return specifier.
+The return type is specified using the return specifier.
 Notice that the lambda itself needs to be captured by reference.
-The value of the argument is printed each time $factorial$ is called.
-The output for $factorial(10)$ is shown in the comments.
+The value of the argument is printed each time $factorial$ is called and the output for $factorial(10)$ is shown in the comments.
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -300,22 +299,26 @@ This function is initially called with the value of the \nth{2} argument.
 The first argument is the number of repetitions.
 Through std::bind $rpl$ sets the number of repetitions equal to the initial value because the first and second argument of $repeat$ are bound to the same placeholder $std:placeholders::\_1$. 
 The result of $rpl(l1,9)$  is printed to stdout, and it's value is shown in the comment.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%COMMENT OUT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 \section*{Currying}
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 {\em Currying} turns any function into a higher order function of one variable \cite{field}.
-The curried version of the function returns a partially applied version of the original.
+The curry of the function returns a partially applied version of the original.
 
-The function signature of $curry2$ designed to curry binary functions is:
+The operator $curry2$ is a higher order function which takes a binary function as input 
+and returns a unary higher order function.
+That function is the curry of the binary function.
 %%--------
 \begin{eqnarray*}
 curry2 \; :: \; ((a,b) \rightarrow c) &\rightarrow& (a \rightarrow b \rightarrow c) \\
 f::(a,b) \rightarrow c &\Rightarrow&  (curry2\;f)::a \rightarrow b \rightarrow c 
 \end{eqnarray*}
 %-----------------------------
-{\em curry2} returns a unary function which is the curried version of $f$.
 When the curried version of $f$ is called with an argument of type $a$ it returns another unary function 
 Calling this function with an argument of type $b$ returns the same value as $f$.
 %%%
@@ -347,7 +350,8 @@ It simplifies the design of higher order functions because we only have to consi
 C++ does not provide a curry operator and functions are not written in curried form. 
 Compare this to Haskell where functions are curried by default \cite{lipovaca, hutton}.
 However writing a curry operator or writing curried versions of a function has become a lot easier now that lambda's are supported.
-
+\end{comment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%COMMENT OUT END%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -362,17 +366,18 @@ map \;::\; (a \rightarrow b) \rightarrow [a] \rightarrow [b]
 \end{eqnarray*}
 %----
 
-The implemention of the map function using stl algorithms requires an interface which takes a unary callable as well as a set of iterators marking the start and end of the container over which the cllable is applied.
+The implemention of the map function using stl algorithms requires an interface which takes a unary callable as well as a set of iterators marking the start and end of the container over which the callable is applied.
 That matches the interface of $std::transform$ function found in the $<algorithm>$ header file \cite{josuttis, std::transform}.
-%
-\footnote {
-In fact $std::for\_each$ in the header $<algorithm>$ has an interface that is close but is an imperative implementation of a for-loop 
-since it changes each element of the input container.
-\cite{std::foreach, josuttis}.
-}
 $std::transform$ takes a unary callable object as input and applies it to the elements of the input container.
 It puts the results in the destination range. 
 The return value is an iterator past the last element of the destination range. 
+\newline
+%
+%\footnote {
+$std::for\_each$ in the header $<algorithm>$ has an interface that is close but it implements an imperative for-loop which  changes each element of the input container.
+\cite{std::foreach, josuttis}.
+%}
+\begin{comment}
 %%---
 \[
 \begin{array}{rll}
@@ -387,6 +392,7 @@ output\_container\_iterator\;& \mbox{\bf transform}\\
 \end{array}
 \]
 %%------------
+\end{comment}
 
 Listing \ref{map} shows a possible implementation of the map function for a std::forward\_list \cite{std::forward_list, josuttis}.
 
@@ -405,11 +411,11 @@ The template for map takes two type parameters $A$ and $F$.
 Parameter $A$ specifies the type of the element in the input container $L$.  
 Parameter $F$ specifies a very generic callable. 
 %--
-\footnote{
-std::function could have been used to provide a more typesafe interface.
-However that would not allow us to use in-line lambda functions.
-The type of each lambda is unique and therefore would not be converted to std::function.
-}
+%\footnote{
+%std::function could have been used to provide a more typesafe interface.
+%However that would not allow us to use in-line lambda functions.
+%The type of each lambda is unique and therefore would not be converted to std::function.
+%}
 %--
 The return type of map is declared as $auto$ because it depends on the types of the input arguments.
 The declaration is deferred until after their declaration and is determined by applying $decltype$ to the expression $f(A())$ \cite{josuttis, auto, decltype}.
@@ -446,9 +452,10 @@ Note that 94 the result of 4 * 23 + 2, 182 the result of 4 * 45 + 2 etc.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%COMMENTED OUT END%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
-$std::transform$ function overloaded and its second implementation applies a binary function to two input ranges and copies the result to the destination range \cite{jouttis, std::transform}. 
+$std::transform$ function has an overloaded implementation which applies a binary function to two input ranges and copies the result to the destination range \cite{jouttis, std::transform}. 
 It returns an iterator past last element in the destination range.
 %%---------------
+\begin{comment}
 \[
 \begin{array}{rll}
 \mbox{\bf template}<& \mbox{\bf typename}\; input\_container\_iterator_1, \\
@@ -465,6 +472,7 @@ output\_container\_iterator\;& \mbox{\bf transform}\\
 \]
 %%------------
 %
+\end{comment}
 This function signature is similar to that of the $zipWith$ function found in Haskell \cite{lipovaca, hutton}:
 %%---
 \begin{eqnarray*}
@@ -506,6 +514,9 @@ Similar to the $map$ function the type of the return list is determined by calli
  //prints : (1,a),(67,b),(89,l),(23,u),(45,t),(1,v),(3,r),(99,6),(-90,h),
 \end{lstlisting}
 Listing \ref{zipexample} illustrates the use of zip on two lists.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%BEGIN COMMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+%
 %
 %%------------
 \begin{lstlisting}[caption=curried version of zipWith, label=curriedZipWith]
@@ -534,6 +545,8 @@ Listing \ref{curriedZipWith} is closer to zipWith's curried version shown in the
 The listing shows the same zip operation as the one in listing \ref{zipexample}.
 The line noise in this version has increased because the curried version  requires explicit template instantiation. 
 C++'s type system is not powerful enough to infer the types from type of the arguments to {\em op}.
+\end{comment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%END OF COMMENT%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -542,16 +555,18 @@ C++'s type system is not powerful enough to infer the types from type of the arg
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 The type signature for reduce is:
-%----
-\footnote{In fact another name for reduce is foldl. there also exists a closely related dual foldr.
-I refer to \cite{bird, hutton} for more on their relationship.}
-%----
 \begin{eqnarray*}
 reduce \;::\; (a \rightarrow b \rightarrow a) \rightarrow a \rightarrow [b] -> \rightarrow a
 \end{eqnarray*}
 $reduce$ moves or folds a binary operation over a list and returns a result.
+%----
+%\footnote{In fact 
+Another name for $reduce$ is $foldl$. There also exists a closely related dual foldr.
+I refer to \cite{bird, hutton} for more on their relationship.
+%%}
+%----
 
-The type of the first argument to the binary operation is the same as the type returned by reduce. 
+The type of the first argument of to the binary operation is the same as the type returned by $reduce$. 
 It's also the type of the first variable encountered after operator specification.
 Therefore this variable is used as the first argument to the binary operation, together with first element of the list $[b]$.
 
@@ -559,8 +574,10 @@ $map$ can be implemented in terms of $reduce$, which makes $reduce$ more powerfu
 In that case the type a would be the list type, and the initial value would be the empty list.
 The binary operator would then concatenate the result of a unary operation to the list.
 
-The $std::accumulate$ function found in the $<numeric>$ header takes a binary operator and a couple of list iterators as input and returns the result of mapping the binary operator over the range \cite{josuttis,std::accumulate}:
+The $std::accumulate$ function found in the $<numeric>$ header takes a binary operator and a couple of list iterators as input and returns the result of mapping the binary operator over the range \cite{josuttis,std::accumulate}.
+
 %%---------------
+\begin{comment}
 \[
 \begin{array}{rll}
 \mbox{template}<&\mbox{typename}\; input\_container\_iterator, \\
@@ -573,9 +590,11 @@ T \;& \mbox{\bf accumulate}\\
 & binary\_operation \; binary_{op} );
 \end{array}
 \]
+\end{comment}
 %%------------
 %
-The main difference between function signature of $std::accumulate$ and $reduce$ is the order of the arguments and the lack of curry.
+The main difference between the function signature of $std::accumulate$ and $reduce$ is the order of the arguments.
+%%%%%%%->curry no longer used -> and the lack of curry.
 \begin{lstlisting}[caption=example of std::accumulate,label=std::accumulate]
 std::forward_list<int> L = {1,-6,23,78,45,13};
   auto max = [] (int x, int y) { return (x > y) ? x : y;};
@@ -600,6 +619,9 @@ The result returned by std::accumulate is printed to stdout and the unsurprising
 In listing \ref{premonad} $std::accumulate$ processes a list by applying an function to each element of the input list and returning the result in a new list.
 The body of the lambda $m$ applies the unary operation $op(y)=(2*y+1)$ and concatenates the result to the destination list. 
 %
+%-----------------------
+\begin{comment}
+%
 \begin{lstlisting}[caption=unary operation and reduce,label=premonad2]
   [...]	
   typedef std::forward_list<int> list_t;
@@ -614,6 +636,8 @@ The body of the lambda $m$ applies the unary operation $op(y)=(2*y+1)$ and conca
 %
 Listing \ref{premonad2} re-factors the code in listing \ref{premonad} by separating the unary operation and the list concatenation.
 %
+\end{comment}
+%----------------------
 \begin{lstlisting}[caption=the list monad, label=listmonad]
   template<typename A, typename F>
 auto mapM (F f, std::forward_list<A> L) -> decltype(f(A()))
@@ -629,8 +653,9 @@ auto mapM (F f, std::forward_list<A> L) -> decltype(f(A()))
 }
 \end{lstlisting}
 %
-Listing \ref{monad} shows the implemention of a function called mapM based on the refactoring done in listing \ref{premonad2}.
-At first blush this looks like a clunky reimplementation of the map function but in fact it's more powerful.
+Listing \ref{listmonad} shows the implemention of a function called mapM based on the refactoring of the code in listing \ref{premonad}.
+It has seperated the unary operation and the list concatenation.
+At first blush this looks like a clunky reimplementation of the $map$ function but in fact it's more powerful.
 Just like map, mapM takes a unary function f, and a list and returns a list:
 \begin{eqnarray*}
 mapM :: (a \rightarrow [b]) \rightarrow [a] \rightarrow [b]
@@ -691,11 +716,13 @@ I hope to discuss the support for those in a follow up article.
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-This article looked at basic functional techniques, like lambda expressions and closures, partial function application, currying, map and reduce.
+This article looked at basic functional techniques, like lambda expressions and closures, partial function application, map and reduce.
+%currying,
+
 It briefly touched on a more powerful, monadic form of the map function.
 The ability to use these functional techniques has become possible because of recent additions to the C++ standard.
 However an important technique like currying is well supported.
-Currying can be implemented by the programmer, but its use introduce some added line noise.
+%%%%%%Currying can be implemented by the programmer, but its use introduce some added line noise.
 The use of functional features does seem to introduce a lot of accolades, returns and semi-colons.
 In addition the error messages generated by the compiler can be quite daunting.
 
